@@ -5,3 +5,4 @@ Implementing mass-file renaming into Ubuntu's default file explorer (Nautilus).
 Files used in renaming:
 - nautilus-list-view.c
 - nautilus-properties-window.c
+- nautilus-view.c
