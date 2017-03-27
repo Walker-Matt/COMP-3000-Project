@@ -12,3 +12,16 @@ How to use:
 - Right click and under the Scripts tab, select 'Nautilus_mass_file_renamer.py'
 - Input text that each file will have in their names
 - Currently each file will be named with the users input, plus a unique number
+
+Current functionality:
+- Can rename multiple files simultaneously
+- Checks for filename extensions
+- Appends a unique number at the end of each file after an underscore
+- Checks for blank input
+- Checks for invalid characters
+
+TO-DO:
+- Improve window to include more options such as:
+	- choice on what unique characters are added
+	- choice on what goes between prefix and unique characters
+	- choice on what parts of original filename are overwritten

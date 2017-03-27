@@ -4,7 +4,7 @@ import sys
 
 TITLE = 'Nautilus_Mass_File_Renamer'
 ZENITY = "zenity --entry '' --title " + TITLE
-INVALID_NAME_CHARS = ('<', '>', ':', '"', '/', '\\', '|', '?', '*')
+INVALID_NAME_CHARS = ('<', '>', ':', '"', '/', '\\', '|', '?', '*', '&', '%')
 
 def main(files):
   if not files:
@@ -71,6 +71,5 @@ def setName(original, entry, unique):
 
   return name
 
-#Needed in order to allow this file to be executed directly as a script
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
