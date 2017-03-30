@@ -15,6 +15,7 @@ How to install as a new nautilus action:
 - Under the 'Command' tab input the path of the script
 	- Also include '%B' in the parameters box, to allow proper file input
 - Then click 'Record all the modified actions'
+- Restart nautilus to use the new action
 
 How to use:
 - Select all the files that you want to rename
