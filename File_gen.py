@@ -9,7 +9,7 @@ prefix = "file"
 def main():
 	makeDir(fileFolder)
 
-	#makes 10 blank files
+	#makes blank files
 	num = 1
 	while num <= numFiles:
 		filename = prefix + "%d" % num
