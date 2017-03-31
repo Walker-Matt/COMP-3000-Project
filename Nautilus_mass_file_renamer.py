@@ -1,9 +1,8 @@
 #!/usr/bin/python
 import os
 import sys
+from Tkinter import *
 
-TITLE = 'Nautilus_Mass_File_Renamer'
-ZENITY = "zenity --entry '' --title " + TITLE
 INVALID_NAME_CHARS = ('<', '>', ':', '"', '/', '\\', '|', '?', '*', '&', '%')
 
 def main(files):
@@ -25,42 +24,6 @@ def main(files):
 
     os.rename(file, newName)
 
-def getName():
-  default = ZENITY + " --text 'Enter a prefix' --width 300"
-  window = os.popen(default)
-  entry = window.read()
-  entry = entry.split('\n')[0]
-  window.close()
-
-  invalid = True
-  while invalid or (not entry):
-    #Check for blank input
-    if not entry:
-      blank = ZENITY + " --text 'No prefix entered' --width 300"
-      window = os.popen(blank)
-      entry = window.read()
-      entry = entry.split('\n')[0]
-      window.close()
-
-    #Check for invalid chars
-    for char in INVALID_NAME_CHARS:
-      if char in entry:
-        #Backslashes are special...
-        if char == '\\':
-          invalid = ZENITY + (" --text 'Cannot contain a backslash' --width 300")
-        else:
-          invalid = ZENITY + (" --text 'Cannot contain: %s' --width 300" % char)
-        window = os.popen(invalid)
-        entry = window.read()
-        entry = entry.split('\n')[0]
-        window.close()
-        invalid = True
-        break
-      else:
-        invalid = False
-
-  return entry
-
 def setName(original, entry, unique):
   name = "%s_%s" % (entry, unique)
 
@@ -70,6 +33,47 @@ def setName(original, entry, unique):
     name = "%s.%s" % (name, fileType)
 
   return name
+
+def getName():
+  root = Tk()
+  window = Window(root)
+  root.mainloop()
+  return window.entry
+
+class Window():
+  def __init__(self, view):
+    self.view = view
+
+    #Window parameters
+    view.title("Nautilus Mass File Renamer")
+    #view.geometry("300x100")
+
+    #Label for above input box
+    self.entryLabel = Label(view, text="Please enter a prefix")
+    self.entryLabel.pack()
+
+    #Input box for filename prefix
+    self.entry = StringVar()
+    vcmd = view.register(self.validate)
+    self.entry = Entry(view, validate="key", validatecommand=(vcmd, '%P'))
+    self.entry.pack()
+
+    #Enter button to finish
+    self.enterButton = Button(view, text="Enter", command=view.quit)
+    self.enterButton.pack()
+
+  def validate(self, text):
+    if not text:
+      return False
+    for char in INVALID_NAME_CHARS:
+      if char in text:
+        return False
+
+    self.entry = text
+    return True
+
+  def getEntry(self):
+    return self.entry
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

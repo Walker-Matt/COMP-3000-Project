@@ -3,6 +3,12 @@ Authors:
 - Matthew Walker 100980836
 - Devon Witol 100??????
 
+Packages needed:
+- latest version of python
+- tkinter (python.tk)
+- nautilus-actions
+- RUN: sudo apt-get install python python-tk nautilus-actions
+
 How to install as a nautilus script:
 - Copy 'Nautilus_mass_file_renamer.py' to ~/.local/share/nautilus/scripts 
   and give permission to execute file as a program
