@@ -59,17 +59,23 @@ class Window():
     self.entry.pack()
 
     #Enter button to finish
-    self.enterButton = Button(view, text="Enter", command=view.quit)
+    self.enterButton = Button(view, text="Enter", state='disabled', command=view.quit)
     self.enterButton.pack()
+
+    #Grid layout for the window
+
+
 
   def validate(self, text):
     if not text:
-      return False
+      self.enterButton.config(state="disabled")
+      return True
     for char in INVALID_NAME_CHARS:
       if char in text:
         return False
 
     self.entry = text
+    self.enterButton.config(state="normal")
     return True
 
   def getEntry(self):

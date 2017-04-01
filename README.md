@@ -39,6 +39,7 @@ Current functionality:
 
 TO-DO:
 - Improve window to include more options such as:
-	- choice on what unique characters are added
+	- choice on if the text is appended to the beginning or end
+	- choice on what unique characters are added (alphabetical or numeric)
 	- choice on what goes between prefix and unique characters
 	- choice on what parts of original filename are overwritten
