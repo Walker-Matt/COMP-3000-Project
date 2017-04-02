@@ -3,7 +3,7 @@ import os
 import sys
 from Tkinter import *
 
-INVALID_NAME_CHARS = ('<', '>', ':', '"', '/', '\\', '|', '?', '*', '&', '%')
+INVALID_NAME_CHARS = ('<', '>', ':', '"', '/', '\\', '|', '?', '*', '%', '+')
 
 def main(files):
   if not files:
@@ -29,7 +29,8 @@ def setName(original, entry, unique):
 
   #check for file type extension
   if '.' in original:
-    fileType = original.split('.')[-1]
+    splitList = original.split('.')
+    fileType = splitList[len(splitList)-1]
     name = "%s.%s" % (name, fileType)
 
   return name
@@ -38,38 +39,50 @@ def getName():
   root = Tk()
   window = Window(root)
   root.mainloop()
-  return window.entry
+  if window.exited:
+    sys.exit()
+  else:
+    return window.entry
 
 class Window():
   def __init__(self, view):
     self.view = view
+    view.protocol('WM_DELETE_WINDOW', self.exited)
+    self.exited = False
 
     #Window parameters
     view.title("Nautilus Mass File Renamer")
-    #view.geometry("300x100")
 
     #Label for above input box
     self.entryLabel = Label(view, text="Please enter a prefix")
-    self.entryLabel.pack()
 
     #Input box for filename prefix
     self.entry = StringVar()
     vcmd = view.register(self.validate)
     self.entry = Entry(view, validate="key", validatecommand=(vcmd, '%P'))
-    self.entry.pack()
 
     #Enter button to finish
     self.enterButton = Button(view, text="Enter", state='disabled', command=view.quit)
-    self.enterButton.pack()
 
     #Grid layout for the window
+    self.entryLabel.grid(row=0, column=0, columnspan=3, sticky=N)
+    self.entry.grid(row=1, column=0, columnspan=2, sticky=W)
+    self.enterButton.grid(row=1, column=1, sticky=E)
 
-
+  def exited(self):
+    self.exited = True
+    self.view.quit()
 
   def validate(self, text):
+    #Check fpr blank entry
     if not text:
       self.enterButton.config(state="disabled")
       return True
+    #Check for name starting with a '.' (hidden file)
+    textChars = text.split()
+    if textChars[0] == '.':
+      return False
+    #Check for invalid filename characters
     for char in INVALID_NAME_CHARS:
       if char in text:
         return False
