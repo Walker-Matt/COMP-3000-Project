@@ -1,7 +1,7 @@
 COMP-3000 Project: Nautilus Mass File Renamer
 Authors:
 - Matthew Walker 100980836
-- Devon Witol 100??????
+- Devon Witol 100863082
 
 Packages needed:
 - latest version of python
@@ -28,7 +28,7 @@ How to use:
 - (As a script) Right click and under the Scripts tab, select 'Nautilus_mass_file_renamer.py'
 - (As an action) Right click and select the 'Mass rename' action
 - Input text that each file will have in their names
-- Currently each file will be named with the users input, plus a unique number
+- Choose a file ordering style (default is numerical)
 
 Current functionality:
 - Can rename multiple files simultaneously
@@ -36,10 +36,10 @@ Current functionality:
 - Appends a unique number at the end of each file after an underscore
 - Checks for blank input
 - Checks for invalid characters
+- Choice on what unique characters are added (alphabetical or numeric)
 
 TO-DO:
 - Improve window to include more options such as:
 	- choice on if the text is appended to the beginning or end
-	- choice on what unique characters are added (alphabetical or numeric)
 	- choice on what goes between prefix and unique characters
 	- choice on what parts of original filename are overwritten
