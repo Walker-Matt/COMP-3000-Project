@@ -18,7 +18,7 @@ How to install as a new nautilus action:
 	- sudo apt-get install nautilus-actions
 - Then open nautilus-actions from Dash and click 'define a new action'
 - Title the action 'Mass rename' for example, in the context label box
-- Under the 'Command' tab input the path of the script
+- Under the 'Command' tab, input the path of the script
 	- Also include '%B' in the parameters box, to allow proper file input
 - Then click 'Record all the modified actions'
 - Restart nautilus to use the new action
@@ -36,7 +36,7 @@ Current functionality:
 - Appends a unique number at the end of each file after an underscore
 - Checks for blank input
 - Checks for invalid characters
-- Choice on what unique characters are added (alphabetical or numeric)
+- Choice on what unique characters are added (alphabetical or numerical)
 - Lists filenames before and after renaming
 
 TO-DO:
