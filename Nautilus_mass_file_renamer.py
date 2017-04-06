@@ -11,7 +11,7 @@ def main(files):
 
   #Create the window
   root = Tk()
-  window = Window(root)
+  window = Window(root, files)
   root.mainloop()
 
   entry = getName(window)
@@ -35,12 +35,19 @@ def setName(original, entry, unique):
   name = "%s_%s" % (entry, unique)
 
   #check for file type extension
-  if '.' in original:
-    splitList = original.split('.')
-    fileType = splitList[len(splitList)-1]
-    name = "%s.%s" % (name, fileType)
+  fileType = getType(original)
+  if fileType:
+    name = "%s%s" % (name, fileType)
 
   return name
+
+def getType(filename):
+  if '.' in filename:
+    splitName = filename.split('.')
+    fileType = '.' + splitName[len(splitName)-1]
+    return fileType
+  else:
+    return None
 
 def getUnique(old, isNumeric, isAlpha):
   #Alphabetical
@@ -85,15 +92,17 @@ def getName(window):
     return window.entry
 
 class Window():
-  def __init__(self, view):
+  def __init__(self, view, files):
     self.view = view
+    self.files = files
     view.protocol('WM_DELETE_WINDOW', self.exited)
+    view.resizable(width=False, height=False)
     self.exited = False
 
     #Window parameters
     view.title("Nautilus Mass File Renamer")
-    windowX = 300
-    windowY = 100
+    windowX = 300 #Width
+    windowY = 275 #Height
     screenX = view.winfo_screenwidth()
     screenY = view.winfo_screenheight()
     WSX = (screenX/2) - (windowX/2)
@@ -140,6 +149,37 @@ class Window():
     self.enterButton.pack()
     self.enterButton.place(anchor=E, x=255, y=40)
 
+    #Scrollbar for both lists
+    self.listScrollBar = Scrollbar(view, command=self.scrollLists)
+    self.listScrollBar.pack(side="right", fill="y")
+    #self.listScrollBar.place(x=275, y=185)
+
+    #Label for selected files list
+    self.oldLabel = Label(view, text="Old Name", relief=RIDGE, width=16)
+    self.oldLabel.pack()
+    self.oldLabel.place(anchor=W, x=10, y=100)
+
+    #list of all selected files
+    self.oldNameList = Listbox(view, width=16, yscrollcommand=self.scroll)
+    self.oldNameList.bind("<MouseWheel>", self.mouseWheel)
+    self.oldNameList.pack()
+    self.oldNameList.place(anchor=W, x=10, y=185)
+    index = 1
+    for file in self.files:
+      self.oldNameList.insert(index, file)
+      index += 1
+
+    #Label for selected files list
+    self.newLabel = Label(view, text="New Name", relief=RIDGE, width=16)
+    self.newLabel.pack()
+    self.newLabel.place(anchor=E, x=275, y=100)
+
+    #List of all renamed files
+    self.newNameList = Listbox(view, width=16, yscrollcommand=self.scroll)
+    self.newNameList.bind("<MouseWheel>", self.mouseWheel)
+    self.newNameList.pack()
+    self.newNameList.place(anchor=E, x=275, y=185)
+
   def exited(self):
     self.exited = True
     self.view.quit()  
@@ -147,6 +187,7 @@ class Window():
   def validate(self, text):
     #Check for blank entry
     if not text:
+      self.updateList(text)
       self.enterButton.config(state="disabled")
       return True
     #Check for name starting with a '.' (hidden file)
@@ -159,6 +200,7 @@ class Window():
         return False
 
     self.entry = text
+    self.updateList(text)
     self.enterButton.config(state="normal")
     return True
 
@@ -166,11 +208,46 @@ class Window():
     self.alphaCheckbox.config(state="normal")
     self.alphaCheckbox.deselect()
     self.numericCheckbox.config(state="disabled")
+    self.updateList(self.entry)
 
   def toggleAlpha(self):
     self.numericCheckbox.config(state="normal")
     self.numericCheckbox.deselect()
     self.alphaCheckbox.config(state="disabled")
+    self.updateList(self.entry)
+
+  def updateList(self, text):
+    if(text):
+      index = 1
+      size = len(self.files)
+      self.newNameList.delete(0, size)
+      unique = getUnique(0, self.numeric.get(), self.alpha.get())
+      for file in self.files:
+        fileType = getType(file)
+        if not fileType:
+          fileType = ""
+        newName = self.entry + "_" + str(unique) + fileType
+        unique = getUnique(unique, self.numeric.get(), self.alpha.get())
+        self.newNameList.insert(index, newName)
+        index += 1
+    else:
+      size = len(self.files)
+      self.newNameList.delete(0, size)
+
+  def scrollLists(self, *args):
+    self.oldNameList.yview(*args)
+    self.newNameList.yview(*args)
+
+  def mouseWheel(self, event):
+    if(event == "<MouseWheel>"):
+      self.scrollLists("scroll", event.delta,"units")
+      return "break"
+
+  def scroll(self, *args):
+    self.listScrollBar.set(*args)
+    units = str(float(args[0]))
+    self.newNameList.yview_moveto(units)
+    self.oldNameList.yview_moveto(units)
 
   def getEntry(self):
     return self.entry

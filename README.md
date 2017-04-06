@@ -37,6 +37,7 @@ Current functionality:
 - Checks for blank input
 - Checks for invalid characters
 - Choice on what unique characters are added (alphabetical or numeric)
+- Lists filenames before and after renaming
 
 TO-DO:
 - Improve window to include more options such as:
