@@ -98,6 +98,7 @@ class Window():
     view.protocol('WM_DELETE_WINDOW', self.exited)
     view.resizable(width=False, height=False)
     self.exited = False
+    colour = "tomato"
 
     #Window parameters
     view.title("Nautilus Mass File Renamer")
@@ -145,17 +146,17 @@ class Window():
     self.alphaCheckbox.place(anchor=W, x=165, y=70)
 
     #Enter button to finish
-    self.enterButton = Button(view, text="Enter", state='disabled', command=view.quit)
+    self.enterButton = Button(view, text="Enter", state='disabled', command=view.quit,
+                              activebackground=colour)
     self.enterButton.pack()
     self.enterButton.place(anchor=E, x=255, y=40)
 
     #Scrollbar for both lists
     self.listScrollBar = Scrollbar(view, command=self.scrollLists)
     self.listScrollBar.pack(side="right", fill="y")
-    #self.listScrollBar.place(x=275, y=185)
 
     #Label for selected files list
-    self.oldLabel = Label(view, text="Old Name", relief=RIDGE, width=16)
+    self.oldLabel = Label(view, text="Old Name", relief=RIDGE, width=16, bg=colour)
     self.oldLabel.pack()
     self.oldLabel.place(anchor=W, x=10, y=100)
 
@@ -169,16 +170,25 @@ class Window():
       self.oldNameList.insert(index, file)
       index += 1
 
+    #Arrows to show relation between lists
+    self.arrow = Listbox(view, width=1, relief=FLAT, bg="light grey")
+    self.arrow.pack()
+    self.arrow.place(anchor=W, x=141, y=185)
+    num = 10
+    while(num != 0):
+      self.arrow.insert(11-num, ">")
+      num -= 1
+
     #Label for selected files list
-    self.newLabel = Label(view, text="New Name", relief=RIDGE, width=16)
+    self.newLabel = Label(view, text="New Name", relief=RIDGE, width=16, bg=colour)
     self.newLabel.pack()
-    self.newLabel.place(anchor=E, x=275, y=100)
+    self.newLabel.place(anchor=E, x=284, y=100)
 
     #List of all renamed files
     self.newNameList = Listbox(view, width=16, yscrollcommand=self.scroll)
     self.newNameList.bind("<MouseWheel>", self.mouseWheel)
     self.newNameList.pack()
-    self.newNameList.place(anchor=E, x=275, y=185)
+    self.newNameList.place(anchor=E, x=284, y=185)
 
   def exited(self):
     self.exited = True
@@ -187,6 +197,7 @@ class Window():
   def validate(self, text):
     #Check for blank entry
     if not text:
+      self.entry = text
       self.updateList(text)
       self.enterButton.config(state="disabled")
       return True
