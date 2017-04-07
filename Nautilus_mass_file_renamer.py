@@ -4,6 +4,8 @@ import sys
 from Tkinter import *
 
 INVALID_NAME_CHARS = ('<', '>', ':', '"', '/', '\\', '|', '?', '*', '%', '+')
+separatorNames = ("None","Space","Underscore","Hyphen","Tilde")
+separatorActual = ("", " ", "_", "-", "~")
 
 def main(files):
   if not files:
@@ -18,6 +20,7 @@ def main(files):
   isNumeric = window.numeric.get()
   isAlpha = window.alpha.get()
   
+  separator = window.separator.get()
   unique = getUnique(0, isNumeric, isAlpha)
 
   for file in files:
@@ -25,14 +28,21 @@ def main(files):
     newName = None
 
     while not newName or (os.path.isfile(newName) and file != newName):
-      name = setName(oldName[1], entry, str(unique))
+      name = setName(oldName[1], entry, separator, str(unique))
       newName = os.path.join(oldName[0], name)
       unique = getUnique(unique, isNumeric, isAlpha)
 
     os.rename(file, newName)
 
-def setName(original, entry, unique):
-  name = "%s_%s" % (entry, unique)
+def setName(original, entry, separator, unique):
+  charIndex = 0
+  for char in separatorNames:
+    if char == separator:
+      separator = separatorActual[charIndex]
+      break
+    else:
+      charIndex += 1
+  name = entry + separator + unique
 
   #check for file type extension
   fileType = getType(original)
@@ -103,7 +113,7 @@ class Window():
     #Window parameters
     view.title("Nautilus Mass File Renamer")
     windowX = 300 #Width
-    windowY = 275 #Height
+    windowY = 300 #Height
     screenX = view.winfo_screenwidth()
     screenY = view.winfo_screenheight()
     WSX = (screenX/2) - (windowX/2)
@@ -158,13 +168,13 @@ class Window():
     #Label for selected files list
     self.oldLabel = Label(view, text="Old Name", relief=RIDGE, width=16, bg=colour)
     self.oldLabel.pack()
-    self.oldLabel.place(anchor=W, x=10, y=100)
+    self.oldLabel.place(anchor=W, x=10, y=115)
 
     #list of all selected files
     self.oldNameList = Listbox(view, width=16, yscrollcommand=self.scroll)
     self.oldNameList.bind("<MouseWheel>", self.mouseWheel)
     self.oldNameList.pack()
-    self.oldNameList.place(anchor=W, x=10, y=185)
+    self.oldNameList.place(anchor=W, x=10, y=200)
     index = 1
     for file in self.files:
       self.oldNameList.insert(index, file)
@@ -173,7 +183,7 @@ class Window():
     #Arrows to show relation between lists
     self.arrow = Listbox(view, width=1, relief=FLAT, bg="light grey")
     self.arrow.pack()
-    self.arrow.place(anchor=W, x=141, y=185)
+    self.arrow.place(anchor=W, x=141, y=200)
     num = 10
     while(num != 0):
       self.arrow.insert(11-num, ">")
@@ -182,13 +192,26 @@ class Window():
     #Label for selected files list
     self.newLabel = Label(view, text="New Name", relief=RIDGE, width=16, bg=colour)
     self.newLabel.pack()
-    self.newLabel.place(anchor=E, x=284, y=100)
+    self.newLabel.place(anchor=E, x=284, y=115)
 
     #List of all renamed files
     self.newNameList = Listbox(view, width=16, yscrollcommand=self.scroll)
     self.newNameList.bind("<MouseWheel>", self.mouseWheel)
     self.newNameList.pack()
-    self.newNameList.place(anchor=E, x=284, y=185)
+    self.newNameList.place(anchor=E, x=284, y=200)
+
+    #Label for separator spinbox
+    self.separatorLabel = Label(view, text="Separator:")
+    self.separatorLabel.pack()
+    self.separatorLabel.place(anchor=W, x=80, y=95)
+
+    #Spinbox listing each possible separator character
+    
+    self.separator = Spinbox(view, width=9, values=separatorNames, bg="white",
+                            state="readonly", command=self.toggleSpinbox)
+    self.separator.pack()
+    self.separator.place(anchor=W, x=150, y=95)
+    
 
   def exited(self):
     self.exited = True
@@ -227,6 +250,9 @@ class Window():
     self.alphaCheckbox.config(state="disabled")
     self.updateList(self.entry)
 
+  def toggleSpinbox(self):
+    self.updateList(self.entry)
+
   def updateList(self, text):
     if(text):
       index = 1
@@ -237,7 +263,14 @@ class Window():
         fileType = getType(file)
         if not fileType:
           fileType = ""
-        newName = self.entry + "_" + str(unique) + fileType
+        charIndex = 0
+        for char in separatorNames:
+          if char == self.separator.get():
+            separator = separatorActual[charIndex]
+            break
+          else:
+            charIndex += 1
+        newName = self.entry + separator + str(unique) + fileType
         unique = getUnique(unique, self.numeric.get(), self.alpha.get())
         self.newNameList.insert(index, newName)
         index += 1

@@ -38,9 +38,9 @@ Current functionality:
 - Checks for invalid characters
 - Choice on what unique characters are added (alphabetical or numerical)
 - Lists filenames before and after renaming
+- Choice on what goes between prefix and unique characters
 
 TO-DO:
 - Improve window to include more options such as:
 	- choice on if the text is appended to the beginning or end
-	- choice on what goes between prefix and unique characters
 	- choice on what parts of original filename are overwritten
